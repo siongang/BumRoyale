@@ -15,6 +15,7 @@ import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
 import { Habit, useHabitStore } from "@/store";
 import { HEADER_HEIGHT, spacing } from "@/styles";
+import HabitForm from "@/components/habitForm";
 
 interface HabitItemProp {
   selectedHabit: Habit | null;
@@ -45,6 +46,7 @@ export default function HabitDetailsScreen({
 
   const updateHabit = useHabitStore((state) => state.updateHabit);
   const removeHabit = useHabitStore((state) => state.removeHabit);
+
   const closeModal = () => {
     updateHabit(detailsHabit)
     onClose();
@@ -93,76 +95,10 @@ export default function HabitDetailsScreen({
               <Text style={styles.createButtonText}>Save</Text>
             </Pressable>
           </View>
-
-          <TextInput
-            style={styles.textInput}
-            placeholder="Enter Habit Name"
-            placeholderTextColor="#888"
-            value={detailsHabit?.name ?? ""}
-            onChangeText={(text) =>
-              setDetailsHabit({ ...detailsHabit, name: text })
-            }
+          <HabitForm 
+            habit={detailsHabit}
+            onChange={(state) => setDetailsHabit(state)}
           />
-
-          <View style={styles.typeButtonContainer}>
-            <Pressable
-              onPress={() =>
-                setDetailsHabit({ ...detailsHabit, type: "positive" })
-              }
-              style={[
-                styles.iconButton,
-                detailsHabit?.type === "positive" && styles.iconButtonSelected,
-              ]}
-            >
-              <Ionicons
-                name="add"
-                size={20}
-                color={detailsHabit?.type === "positive" ? "#181A1B" : "white"}
-              />
-            </Pressable>
-
-            <Pressable
-              onPress={() =>
-                setDetailsHabit({ ...detailsHabit, type: "negative" })
-              }
-              style={[
-                styles.iconButton,
-                detailsHabit?.type === "negative" && styles.iconButtonSelected,
-              ]}
-            >
-              <Ionicons
-                name="remove"
-                size={20}
-                color={detailsHabit?.type === "negative" ? "#181A1B" : "white"}
-              />
-            </Pressable>
-          </View>
-
-          <View style={styles.daysContainer}>
-            {days.map((day, index) => {
-              const isSelected = detailsHabit.frequency.includes(index);
-              return (
-                <Pressable
-                  key={index}
-                  onPress={() => toggleDay(index)}
-                  style={[
-                    styles.dayButton,
-                    isSelected && styles.dayButtonSelected,
-                  ]}
-                >
-                  <Text
-                    style={
-                      isSelected
-                        ? styles.dayButtonTextSelected
-                        : styles.dayButtonText
-                    }
-                  >
-                    {day}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
         </View>
       </Modal>
     </KeyboardAvoidingView>
@@ -195,56 +131,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "white",
   },
-  textInput: {
-    color: "white",
-    width: "100%",
-    borderBottomWidth: 1,
-    borderBottomColor: "#3A3A3C",
-    paddingVertical: 10,
-    marginBottom: 24,
-    fontSize: 16,
-  },
-  typeButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 20,
-    marginBottom: 24,
-  },
-  iconButton: {
-    backgroundColor: "#2A2A2E",
-    padding: 12,
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconButtonSelected: {
-    backgroundColor: "#FFFFFF",
-  },
-  daysContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-  },
-  dayButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#2A2A2E",
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: spacing.md,
-  },
-  dayButtonSelected: {
-    backgroundColor: "#FFFFFF",
-  },
-  dayButtonText: {
-    color: "white",
-    fontWeight: "500",
-  },
-  dayButtonTextSelected: {
-    color: "#181A1B",
-    fontWeight: "700",
-  },
+
   createButton: {
     backgroundColor: "#FFFFFF",
     paddingVertical: 10,
