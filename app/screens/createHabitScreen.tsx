@@ -21,7 +21,7 @@ type CreateHabitModalProps = {
 };
 
 
-export default function CreateHabitScreen({ visible, onClose }: CreateHabitModalProps) {
+export default function CreateHabitModal({ visible, onClose }: CreateHabitModalProps) {
   const router = useRouter();
 
   const [habitName, setHabitName] = useState<string>("");
@@ -44,7 +44,7 @@ export default function CreateHabitScreen({ visible, onClose }: CreateHabitModal
     if (newHabit.name) {
       await addHabit(newHabit);
       closeModal();
-    }
+    };
   };
 
   const toggleDay = (index: number) => {

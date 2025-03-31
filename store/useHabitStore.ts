@@ -19,6 +19,8 @@ type HabitStore = {
   loadHabits: () => Promise<void>;
   addHabit: (habit: Habit) => Promise<void>;
   clearHabits: () => Promise<void>;
+  updateHabit: (updatedHabit: Habit) => Promise<void>;
+  removeHabit: (removedHabit: Habit) => Promise<void>
   toggleSelected: (id: string) => Promise<void>;
 };
 
@@ -50,6 +52,22 @@ export const useHabitStore = create<HabitStore>((set, get) => ({
     }
   },
 
+  updateHabit: async (updatedHabit: Habit) => {
+    const currentHabits = get().habits;
+    const updatedHabits = currentHabits.map((habit) =>
+      habit.id === updatedHabit.id ? updatedHabit : habit
+    );
+
+    set({ habits: updatedHabits });
+  },
+  removeHabit: async (removedHabit: Habit) => {
+    const currentHabits = get().habits;
+    const updatedHabits = currentHabits.filter(
+      (habit) => habit.id !== removedHabit.id
+    );
+    set({ habits: updatedHabits });
+  },
+
   clearHabits: async () => {
     try {
       await AsyncStorage.removeItem(STORAGE_KEY);
@@ -59,10 +77,11 @@ export const useHabitStore = create<HabitStore>((set, get) => ({
     }
   },
 
+  // Handles habit selection by flipping selected habit to selected or deselected
   toggleSelected: async (id: string) => {
     console.log("toggling button");
-    const current = get().habits;
-    const updatedHabits = current.map((habit) =>
+    const currentHabits = get().habits;
+    const updatedHabits = currentHabits.map((habit) =>
       habit.id === id ? { ...habit, selected: !habit.selected } : habit
     );
     set({ habits: updatedHabits });

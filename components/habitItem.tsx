@@ -5,6 +5,7 @@ import { useHabitStore, type Habit } from "@/store";
 import { useRouter } from "expo-router";
 import { spacing } from "@/styles/spacing";
 import Typography from "@/styles/typography";
+import { useHabitDetailsModalStore } from "@/store/useHabitDetailsModalStore";
 
 interface HabitItemProp {
   habit: Habit;
@@ -18,15 +19,21 @@ const HabitItem = ({ habit }: HabitItemProp) => {
     await toggleSelected(id);
   };
 
+  const setSelectedHabit = useHabitDetailsModalStore((state) => state.setSelectedHabit)
+
   return (
     <>
     <Pressable 
         style={styles.habitContainer}
-        onPress={() => router.push("/screens/habitDetailsScreen")}
+        onPress={() => {
+          // router.push("/screens/habitDetailsScreen")
+          setSelectedHabit( habit )
+          
+        }}
     >
         <TouchableOpacity 
-            onPress={() => handleToggleSelected(habit.id)} style={styles.iconButton}
-            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}    
+          onPress={() => handleToggleSelected(habit.id)} style={styles.iconButton}
+          hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}    
         >
           <Ionicons
             name={habit.type === "positive" ? "add" : "remove"}
